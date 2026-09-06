@@ -1,25 +1,30 @@
 import Lightfall from './Lightfall';
 import Cards from './Cards';
 import "../App.css"
-import {useState} from 'react'
+import { useState } from 'react'
 
 export default function Main() {
-
     const [finalCity, setFinalCity] = useState('Sohag');
     const [city, setCity] = useState('');
 
     function handleSearch() {
+        if (!city.trim()) return; // منع البحث الفارغ
         setFinalCity(city);
         setCity('');
     }
 
-
     return (
-        <div className="main-container">
-            <Lightfall>
-                <div className="HeaderContainer">
+        <div className="main-container" style={{ position: 'relative', width: '100%', minHeight: '100vh', overflow: 'hidden' }}>
+            
+            {/* 1. خلفية Lightfall قائمة بذاتها في الخلفية */}
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0, pointerEvents: 'none' }}>
+                <Lightfall />
+            </div>
 
-                        <div className="header" style={{
+            {/* 2. عناصر الواجهة تطفو فوق الخلفية بزاوية zIndex أعلى */}
+            <div style={{ position: 'relative', zIndex: 1, paddingBottom: '40px' }}>
+                <div className="HeaderContainer">
+                    <div className="header" style={{
                         display: 'flex',
                         alignItems: 'center',
                         backgroundColor: 'rgba(255, 255, 255, 0.15)',
@@ -35,8 +40,9 @@ export default function Main() {
                         <input 
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSearch()} // البحث عند الضغط على Enter
                             type="text" 
-                            placeholder= "Enter city name..." 
+                            placeholder="Enter city name..." 
                             className="city-input" 
                             style={{ 
                                 flex: 1,
@@ -46,7 +52,7 @@ export default function Main() {
                                 padding: '10px',
                                 color: 'white',
                                 fontSize: '16px',
-                                direction: 'rtl'
+                                direction: 'ltr' // تعديل الاتجاه لتطابق النص الإنجليزي
                             }} 
                         />
                         <button 
@@ -69,12 +75,12 @@ export default function Main() {
                         </button>
                     </div>
                 </div>
+
                 <div className="cards-container">
-                    <Cards style={{border: "1px solid white",  borderRadius: "5px" }} City={finalCity} />
-                    
+                    <Cards style={{ border: "1px solid white", borderRadius: "5px" }} City={finalCity} />
                 </div>
-                    
-            </Lightfall>
+            </div>
+
         </div>
     );
 }

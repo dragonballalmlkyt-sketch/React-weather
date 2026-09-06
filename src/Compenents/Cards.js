@@ -31,7 +31,6 @@ export default function BasicCard({City}) {
     let [description, setDescription] = useState(null);
     let [maxTemp, setMaxTemp] = useState(null);
     let [minTemp, setMinTemp] = useState(null);
-    let [icon, setIcon] = useState(null);
     let [time, setTime] = useState(null);
     const [cityName, setCityName] = useState('');
 
@@ -49,8 +48,6 @@ export default function BasicCard({City}) {
             setTemp(response.data.main.temp);
             setDescription(response.data.weather[0].description);
             setMaxTemp(response.data.main.temp_max);
-            setMinTemp(response.data.main.temp_min);
-            setIcon(`https://openweathermap.org/payload/api/media/file/${response.data.weather[0].icon}.png`);
             setCityName(activeCity || "Sohag");
             setTime(moment().format('MMMM Do YYYY, h:mm:ss a'));
 
@@ -64,7 +61,19 @@ export default function BasicCard({City}) {
     
     }, [City]);
 
+    let iconcolor;
+    if (temp >= 35) {
+        iconcolor = '#EF4444'; // أحمر ناعم (حار جداً)
+    } else if (temp >= 25) {
+        iconcolor = '#F59E0B'; // برتقالي/ذهبي (دافئ)
+    } else if (temp >= 15) {
+        iconcolor = '#10B981'; // أخضر معتدل (معتدل)
+    } else {
+        iconcolor = '#38BDF8';
+    }
+
     
+
     return (
     <Card sx={{ minWidth: 275, backgroundColor: 'rgba(255, 255, 255, 0.1)', color: 'white' }}>
         <CardContent>
@@ -84,7 +93,7 @@ export default function BasicCard({City}) {
                     {/* التعديل هنا: استخدام Flexbox لوضع الرقم والدائرة بجانب بعضهما */}
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
                     {/* <Brightness1Icon className="temp-icon" style={{ color: tempcolor }} /> */}
-                    <img src={icon} alt="Weather Icon" style={{ width: '50px', height: '50px' }} />
+                    <Brightness1Icon className="temp-icon" style={{ color: iconcolor, fontSize: 30 }} />
                         <p style={{ fontSize: 50, margin: 0 }}>{temp}°</p>
                         
                     </div>
