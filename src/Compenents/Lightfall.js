@@ -216,11 +216,15 @@ const Lightfall = ({
     const container = containerRef.current;
     if (!container) return;
 
+    // فحص الشاشات الصغيرة والهواتف لمنع الحمل الزائد على GPU
+    const isMobile = typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
     const renderer = new Renderer({
-      dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
+      dpr: dpr ?? (isMobile ? 1 : (typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1)),
       alpha: true,
-      antialias: true
+      antialias: !isMobile
     });
+    
     rendererRef.current = renderer;
     const gl = renderer.gl;
     const canvas = gl.canvas;
@@ -276,14 +280,18 @@ const Lightfall = ({
     meshRef.current = mesh;
 
     const resize = () => {
+      if (!container) return;
       const rect = container.getBoundingClientRect();
-      renderer.setSize(rect.width, rect.height);
+      renderer.setSize(rect.width || window.innerWidth, rect.height || window.innerHeight);
       uniforms.iResolution.value = [gl.drawingBufferWidth, gl.drawingBufferHeight, 1];
     };
 
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(container);
+
+    // تحديث الأبعاد عند بداية الفتح على الهاتف
+    const mobileResizeTimer = setTimeout(resize, 250);
 
     const onPointerMove = e => {
       const rect = container.getBoundingClientRect();
@@ -327,6 +335,7 @@ const Lightfall = ({
     rafRef.current = requestAnimationFrame(loop);
 
     return () => {
+      clearTimeout(mobileResizeTimer);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (mouseInteraction) container.removeEventListener('pointermove', onPointerMove);
       ro.disconnect();

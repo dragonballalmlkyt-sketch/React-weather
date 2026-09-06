@@ -45,9 +45,10 @@ export default function BasicCard({City}) {
         .then((response) => {
 
             console.log(response.data);
-            setTemp(response.data.main.temp);
+            setTemp(Math.round(response.data.main.temp));
             setDescription(response.data.weather[0].description);
-            setMaxTemp(response.data.main.temp_max);
+            setMaxTemp(Math.round(response.data.main.temp_max));
+            setMinTemp(Math.round(response.data.main.temp_min));
             setCityName(activeCity || "Sohag");
             setTime(moment().format('MMMM Do YYYY, h:mm:ss a'));
 
