@@ -18,7 +18,7 @@ export default function Main() {
             
             {/* 1. خلفية Lightfall قائمة بذاتها في الخلفية */}
             <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0, pointerEvents: 'none' }}>
-                <Lightfall />
+                <img src="https://i.pinimg.com/736x/3b/a6/40/3ba6406bf527681360fe998cb90f470a.jpg" alt="Background" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
 
             {/* 2. عناصر الواجهة تطفو فوق الخلفية بزاوية zIndex أعلى */}
