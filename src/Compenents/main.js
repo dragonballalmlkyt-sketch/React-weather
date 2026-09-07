@@ -2,6 +2,7 @@ import Lightfall from './Lightfall';
 import Cards from './Cards';
 import "../App.css"
 import { useState } from 'react'
+import moment from 'moment';
 
 export default function Main() {
     const [finalCity, setFinalCity] = useState('Sohag');
@@ -13,12 +14,34 @@ export default function Main() {
         setCity('');
     }
 
+let src;
+function updateBackground() {
+
+    const currentHour = moment().hour();
+    src = "";
+
+    if (currentHour >= 5 && currentHour < 12) {
+        src = "https://i.pinimg.com/736x/3b/a6/40/3ba6406bf527681360fe998cb90f470a.jpg"; // الصباح / النهار
+    } else if (currentHour >= 12 && currentHour < 17) {
+        src = "https://i.pinimg.com/1200x/c8/3e/d0/c83ed0e80840aa35ff073cbcc2205d98.jpg"; // الظهر
+    } else if (currentHour >= 17 && currentHour < 20) {
+        src = "https://i.pinimg.com/736x/39/26/d2/3926d217236957a95d9c8519db93a421.jpg"; // الغروب
+    } else {
+        src = "https://i.pinimg.com/736x/a0/20/e1/a020e141b99139a6730d7fb018dda96b.jpg"; // الليل
+    }
+
+}
+
+updateBackground();
+
+setInterval(updateBackground, 60000);
+
     return (
         <div className="main-container" style={{ position: 'relative', width: '100%', minHeight: '100vh', overflow: 'hidden' }}>
             
             {/* 1. خلفية Lightfall قائمة بذاتها في الخلفية */}
             <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0, pointerEvents: 'none' }}>
-                <img src="https://i.pinimg.com/736x/3b/a6/40/3ba6406bf527681360fe998cb90f470a.jpg" alt="Background" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src={src} alt="Background" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
 
             {/* 2. عناصر الواجهة تطفو فوق الخلفية بزاوية zIndex أعلى */}
